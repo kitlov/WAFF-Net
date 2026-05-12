@@ -59,21 +59,22 @@ parser.add_argument("--output_root",type=str,   default="./lightweight/Ablation/
 args = parser.parse_args()
 if not args.train_path:
     args.train_path = {
-        "NH-haze":       r"F:/Python_For_kitlov/4.desmoke/WLD-Net-main/train_input/NH-Haze_256",
-        "O-haze":        "/home/8T/lwj/dehaze/WLD-Net-main/train_input/O-Haze_patch",
-        "Dense-haze":    "/home/8T/lwj/dehaze/WLD-Net-main/train_input/Dense-Haze_256patch",
-        "ITS":           "F:/Python_For_kitlov/4.desmoke/1_data/RESIDE/ITS_v2",
-        "reside6k":      "F:/Python_For_kitlov/4.desmoke/1_data/reside6k/train/"
+        "NH-haze": "",
+        "O-haze": "",
+        "Dense-haze": "",
+
+        "ITS": "",
+        "reside6k": ""
     }[args.category]
 
 if not args.val_patch_path:
     args.val_patch_path = {
-        "NH-haze": r"F:/Python_For_kitlov/4.desmoke/WLD-Net-main/test_input/NH-Haze3",
-        "O-haze": "/home/8T/lwj/dehaze/data/test_input/O-Haze_1024",
-        "Dense-haze": "/home/8T/lwj/dehaze/data/test_input/Dense-Haze_1024",
-        # "ITS": "F:/Python_For_kitlov/4.desmoke/1_data/RESIDE/HSTS/synthetic",
-        "ITS": "F:/Python_For_kitlov/4.desmoke/1_data/RESIDE/SOTS/indoor",
-        "reside6k": "F:/Python_For_kitlov/4.desmoke/RESIDE/HSTS/synthetic/"
+        "NH-haze":"",
+        "O-haze": "",
+        "Dense-haze": "",
+
+        "ITS": "",
+        "reside6k": ""
     }[args.category]
 
 if not args.val_orig_path:
@@ -190,7 +191,7 @@ def loss_FFT(input, target):
     return F.l1_loss(input_mag, target_mag)
 
 
-loss_SASWLoss = SASWLoss.SASWLoss(loss_weight=1.0, reduction='mean')
+loss = Loss.Loss(loss_weight=1.0, reduction='mean')
 # contrast_loss = ContrastLoss(ablation=False)   # 需要负样本，保持默认 False
 l1_loss = nn.L1Loss()
 def loss_fn_ori(outputs, targets):
@@ -209,7 +210,7 @@ def loss_fn(outputs, targets,inputs):
     FFT_loss = loss_FFT(outputs, targets)
     # loss = (7 * DWT_loss) + FFT_loss
     # ==========version2============
-    SASW_loss = loss_SASWLoss(outputs, targets)
+    SASW_loss = Loss(outputs, targets)
     # ==========version3============
     # l1loss = criterion(outputs,targets)
     # con_loss = contrastive(outputs, targets, inputs)
@@ -307,34 +308,6 @@ for epoch in range(NUM_EPOCHS):
     validation_patch_gt_images = []
     validation_patch_haze_images = []
     with torch.no_grad():
-    #     for i, batch in enumerate(validation_original_data_loader):  # validation_original_data_loader
-    #         inputs, targets = batch
-    #         inputs = inputs.to(device)
-    #         targets = targets.to(device)
-    #         inputs = Feature_Processing.normalize(inputs)
-    #         targets = Feature_Processing.normalize(targets)
-    #         outputs = model(inputs)
-    #
-    #         loss = loss_fn(outputs, targets)
-    #
-    #         validation_batch_whole_loss += loss.item()
-    #
-    #         inputs = Feature_Processing.denormalize(inputs)
-    #         outputs = Feature_Processing.denormalize(outputs)
-    #         targets = Feature_Processing.denormalize(targets)
-    #
-    #         # # Ensure data types are consistent
-    #         # outputs = outputs.float()
-    #         # targets = targets.float()
-    #         # Calculate PSNR, SSIM and MSE
-    #         validation_batch_whole_psnr += piq.psnr(outputs, targets).item()
-    #         validation_batch_whole_ssim += piq.ssim(outputs, targets, data_range=1., reduction='mean').item()
-    #         validation_batch_whole_mse += torch.nn.functional.mse_loss(outputs, targets).item()
-    #
-    #     validation_whole_loss.append(validation_batch_whole_loss / len(validation_original_data_loader))
-    #     validation_whole_psnr.append(validation_batch_whole_psnr / len(validation_original_data_loader))
-    #     validation_whole_ssim.append(validation_batch_whole_ssim / len(validation_original_data_loader))
-    #     validation_whole_mse.append(validation_batch_whole_mse / len(validation_original_data_loader))
 
 
         # Validation Patch Calculation
